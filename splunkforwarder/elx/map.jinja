@@ -1,0 +1,32 @@
+{#- Initialize a map of default values #}
+{%- load_yaml as defaults %}
+
+package: splunkforwarder
+package_url: ''
+package_url_hash: ''
+service: splunk
+deploymentclient:
+  conf: /opt/splunkforwarder/etc/system/local/deploymentclient.conf
+  source: ''
+  source_hash: ''
+log_local:
+  conf: /opt/splunkforwarder/etc/system/local/log-local.cfg
+  source: ''
+  source_hash: ''
+client_out_ports:
+  - 8089
+  - 9997
+cert_file: /opt/splunkforwarder/etc/auth/splunkweb/cert.pem
+bin_file: /opt/splunkforwarder/bin/splunk
+service_file: /etc/init.d/splunk
+
+{%- endload %}
+
+{#- Define the splunkforwarder map, merging pillar and default values #}
+{%-
+    set splunkforwarder = salt['pillar.get'](
+        'splunkforwarder:lookup',
+        default=defaults,
+        merge=True
+    )
+%}
