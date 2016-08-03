@@ -26,8 +26,9 @@ not configured in pillar, the formula will fail.
 
 ### (Windows) splunkforwarder:lookup:deploymentclient
 
-This parameter is a map containing the `source` and `source_hash` of the
-deploymentclient.conf file.
+This parameter is a map containing the `client_name` and `target_uri` keys.
+`client_name` is a string that identifies the client environment to Splunk.
+`target_uri` is the fqdn:port of the Splunk collector.
 
 >**Required**: `True`
 
@@ -37,25 +38,28 @@ deploymentclient.conf file.
 splunkforwarder:
   lookup:
     deploymentclient:
-      source: https://path/to/my/deploymentclient.conf
-      source_hash: https://path/to/my/deploymentclient.conf.HASH
+      client_name: splunk-uf-windows-srv
+      target_uri: 'hostname.domainname:9098'
 ```
 
 ### (Windows) splunkforwarder:lookup:log_local
 
-This parameter is a map containing the `source` and `source_hash` of the
-log-local.cfg file.
+This parameter is a map with a `contents` key that contains the contents of the
+`log-local.cfg` file. The `log-local.cfg` contains information on what logs
+will be forwarded to the Splunk collector.
 
->**Required**: `True`
+>**Required**: `False`
+>
+>**Default**: _See example below_
 
 **Example**:
 
 ```yaml
-splunkforwarder:
-  lookup:
-    log_local:
-      source: https://path/to/my/log-local.cfg
-      source_hash: https://path/to/my/log-local.cfg.HASH
+log_local:
+  contents: |
+      category.StatusMgr=WARN
+      category.TcpOutputProc=WARN
+      category.FilesystemChangeWatcher=ERROR
 ```
 
 ### (Windows) splunkforwarder:lookup:package
@@ -114,8 +118,9 @@ splunkforwarder:
 
 ### (Linux) splunkforwarder:lookup:deploymentclient
 
-This parameter is a map containing the `source` and `source_hash` of the
-deploymentclient.conf file.
+This parameter is a map containing the `client_name` and `target_uri` keys.
+`client_name` is a string that identifies the client environment to Splunk.
+`target_uri` is the fqdn:port of the Splunk collector.
 
 >**Required**: `True`
 
@@ -125,25 +130,28 @@ deploymentclient.conf file.
 splunkforwarder:
   lookup:
     deploymentclient:
-      source: https://path/to/my/deploymentclient.conf
-      source_hash: https://path/to/my/deploymentclient.conf.HASH
+      client_name: splunk-uf-windows-srv
+      target_uri: 'hostname.domainname:9098'
 ```
 
 ### (Linux) splunkforwarder:lookup:log_local
 
-This parameter is a map containing the `source` and `source_hash` of the
-log-local.cfg file.
+This parameter is a map with a `contents` key that contains the contents of the
+`log-local.cfg` file. The `log-local.cfg` contains information on what logs
+will be forwarded to the Splunk collector.
 
->**Required**: `True`
+>**Required**: `False`
+>
+>**Default**: _See example below_
 
 **Example**:
 
 ```yaml
-splunkforwarder:
-  lookup:
-    log_local:
-      source: https://path/to/my/log-local.cfg
-      source_hash: https://path/to/my/log-local.cfg.HASH
+log_local:
+  contents: |
+      category.StatusMgr=WARN
+      category.TcpOutputProc=WARN
+      category.FilesystemChangeWatcher=ERROR
 ```
 
 ### (Linux) splunkforwarder:lookup:package
