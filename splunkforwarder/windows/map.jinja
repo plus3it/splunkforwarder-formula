@@ -14,13 +14,13 @@ service: 'SplunkForwarder'
 deploymentclient:
   conf: >-
     '{{ programfiles }}\SplunkUniversalForwarder\etc\system\local\deploymentclient.conf'
-  source: ''
-  source_hash: ''
 log_local:
+  contents: |
+      category.StatusMgr=WARN
+      category.TcpOutputProc=WARN
+      category.FilesystemChangeWatcher=ERROR
   conf: >-
     '{{ programfiles }}\SplunkUniversalForwarder\etc\log-local.cfg'
-  source: ''
-  source_hash: ''
 
 {%- endload %}
 

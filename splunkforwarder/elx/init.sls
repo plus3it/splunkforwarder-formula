@@ -36,22 +36,27 @@ Install Splunk Package:
 Install Client Log Config File:
   file.managed:
     - name: {{ splunkforwarder.log_local.conf }}
-    - source: {{ splunkforwarder.log_local.source }}
-    - source_hash: {{ splunkforwarder.log_local.source_hash }}
     - user: root
     - group: root
     - mode: 0600
+    - contents: |
+        {{ splunkforwarder.log_local.contents | indent(8) }}
     - require:
       - pkg: Install Splunk Package
 
 Install Client Agent Config File:
   file.managed:
     - name: {{ splunkforwarder.deploymentclient.conf }}
-    - source: {{ splunkforwarder.deploymentclient.source }}
-    - source_hash: {{ splunkforwarder.deploymentclient.source_hash }}
     - user: root
     - group: root
     - mode: 0600
+    - contents: |
+        [deployment-client]
+        disabled = false
+        clientName = {{ splunkforwarder.deploymentclient.client_name }}
+
+        [target-broker:deploymentServer]
+        targetUri = {{ splunkforwarder.deploymentclient.target_uri }}
     - require:
       - pkg: Install Splunk Package
 

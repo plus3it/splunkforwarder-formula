@@ -2,17 +2,15 @@
 {%- load_yaml as defaults %}
 
 package: splunkforwarder
-package_url: ''
-package_url_hash: ''
 service: splunk
 deploymentclient:
   conf: /opt/splunkforwarder/etc/system/local/deploymentclient.conf
-  source: ''
-  source_hash: ''
 log_local:
+  contents: |
+      category.StatusMgr=WARN
+      category.TcpOutputProc=WARN
+      category.FilesystemChangeWatcher=ERROR
   conf: /opt/splunkforwarder/etc/system/local/log-local.cfg
-  source: ''
-  source_hash: ''
 client_out_ports:
   - 8089
   - 9997
