@@ -11,6 +11,20 @@
 {%- from tpldir ~ '/map.jinja' import splunkforwarder with context %}
 
 {%- for port in splunkforwarder.client_out_ports %}
+  {%- if salt.grains.get('osmajorrelease') == '7'%}
+    {%- set FwZone = salt.firewalld.default_zone() %}
+Allow Splunk Mgmt Outbound Port {{ port }}:
+  module.run:
+    - name: 'firewalld.add_port'
+    - zone: '{{ FwZone }}'
+    - port: '{{ port }}/tcp'
+    - permanent: True
+
+Reload firewalld for Outbound Port {{ port }}:
+  module.run:
+    - name: firewalld.reload_rules
+
+  {%- elif salt.grains.get('osmajorrelease') == '6'%}
 Allow Splunk Mgmt Outbound Port {{ port }}:
   iptables.append:
     - table: filter
@@ -26,6 +40,8 @@ Allow Splunk Mgmt Outbound Port {{ port }}:
     - save: True
     - require_in:
       - file: Install Splunk Package
+  {%- else %}
+  {%- endif %}
 {%- endfor %}
 
 Install Splunk Package:
