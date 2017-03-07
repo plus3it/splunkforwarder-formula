@@ -12,11 +12,17 @@
 
 {%- for port in splunkforwarder.client_out_ports %}
   {%- if salt.grains.get('osmajorrelease') == '7'%}
+    {%- set FwZone = salt.firewalld.default_zone() %}
 Allow Splunk Mgmt Outbound Port {{ port }}:
-  cmd.run:
-    - name: 'printf "\nchanged=no comment=''No firewalld handler currently available to handle port {{ port }} exception.''\n"'
-    - cwd: /root
-    - stateful: True
+  module.run:
+    - name: 'firewalld.add_port'
+    - zone: '{{ FwZone }}'
+    - port: '{{ port }}/tcp'
+    - permanent: True
+
+Reload firewalld for Outbound Port {{ port }}:
+  module.run:
+    - name: firewalld.reload_rules
 
   {%- elif salt.grains.get('osmajorrelease') == '6'%}
 Allow Splunk Mgmt Outbound Port {{ port }}:
