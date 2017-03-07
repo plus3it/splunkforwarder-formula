@@ -11,6 +11,14 @@
 {%- from tpldir ~ '/map.jinja' import splunkforwarder with context %}
 
 {%- for port in splunkforwarder.client_out_ports %}
+  {%- if salt.grains.get('osmajorrelease') == '7'%}
+Allow Splunk Mgmt Outbound Port {{ port }}:
+  cmd.run:
+    - name: 'printf "\nchanged=no comment=''No firewalld handler currently available to handle port {{ port }} exception.''\n"'
+    - cwd: /root
+    - stateful: True
+
+  {%- elif salt.grains.get('osmajorrelease') == '6'%}
 Allow Splunk Mgmt Outbound Port {{ port }}:
   iptables.append:
     - table: filter
@@ -26,6 +34,8 @@ Allow Splunk Mgmt Outbound Port {{ port }}:
     - save: True
     - require_in:
       - file: Install Splunk Package
+  {%- else %}
+  {%- endif %}
 {%- endfor %}
 
 Install Splunk Package:
