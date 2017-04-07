@@ -7,6 +7,9 @@ splunkforwarder-install:
     - require_in:
       - file: splunkforwarder-deploymentclient.conf
       - file: splunkforwarder-log-local.cfg
+    - onchanges_in:
+      - service: splunkforwarder-service-stop
+      - cmd: splunkforwarder-clone-prep-clear-config
 
 splunkforwarder-deploymentclient.conf:
   file.managed:
@@ -20,7 +23,7 @@ splunkforwarder-deploymentclient.conf:
         targetUri = {{ splunkforwarder.deploymentclient.target_uri }}
     - makedirs: True
     - watch_in:
-      - service: splunkforwarder-service
+      - service: splunkforwarder-service-start
 
 splunkforwarder-log-local.cfg:
   file.managed:
@@ -29,8 +32,20 @@ splunkforwarder-log-local.cfg:
         {{ splunkforwarder.log_local.contents | indent(8) }}
     - makedirs: True
     - watch_in:
-      - service: splunkforwarder-service
+      - service: splunkforwarder-service-start
 
-splunkforwarder-service:
+splunkforwarder-service-stop:
+  service.dead:
+    - name: {{ splunkforwarder.service }}
+    - require_in:
+      - cmd: splunkforwarder-clone-prep-clear-config
+
+splunkforwarder-clone-prep-clear-config:
+  cmd.run:
+    - name: '"{{ splunkforwarder.bin_file }}" clone-prep-clear-config'
+    - watch_in:
+      - service: splunkforwarder-service-start
+
+splunkforwarder-service-start:
   service.running:
     - name: {{ splunkforwarder.service }}

@@ -21,6 +21,8 @@ log_local:
       category.FilesystemChangeWatcher=ERROR
   conf: >-
     '{{ programfiles }}\SplunkUniversalForwarder\etc\log-local.cfg'
+bin_file: >-
+    {{ programfiles }}\SplunkUniversalForwarder\bin\splunk.exe
 
 {%- endload %}
 
