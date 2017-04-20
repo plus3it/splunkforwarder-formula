@@ -42,7 +42,7 @@ splunkforwarder-service-stop:
 
 splunkforwarder-clone-prep-clear-config:
   cmd.run:
-    - name: '"{{ splunkforwarder.bin_file }}" clone-prep-clear-config'
+    - name: '"{{ splunkforwarder.bin_file }}" clone-prep-clear-config || exit /B 0'
     - watch_in:
       - service: splunkforwarder-service-start
 
