@@ -12,15 +12,18 @@
 
 {%- for port in splunkforwarder.client_out_ports %}
   {%- if salt.grains.get('osmajorrelease') == '7'%}
-    {%- set FwZone = salt.firewalld.default_zone() %}
-Allow Splunk Mgmt Outbound Port {{ port }}:
+    {%- for zone in salt.firewalld.get_zones() %}
+Allow Splunk Mgmt Outbound Port {{ port }}-{{ zone }}:
   module.run:
     - name: 'firewalld.add_port'
-    - zone: '{{ FwZone }}'
+    - zone: '{{ zone }}'
     - port: '{{ port }}/tcp'
     - permanent: True
+    - require_in:
+      - module: Reload firewalld for Splunk Outbound Port {{ port }}
+    {%- endfor %}
 
-Reload firewalld for Outbound Port {{ port }}:
+Reload firewalld for Splunk Outbound Port {{ port }}:
   module.run:
     - name: firewalld.reload_rules
 
