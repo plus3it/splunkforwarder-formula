@@ -71,6 +71,28 @@ Install Client Agent Config File:
     - require:
       - pkg: Install Splunk Package
 
+{%- if splunkforwarder.inputs.get('sections') %}
+Create Inputs Conf:
+  file.managed:
+    - name: {{ splunkforwarder.inputs.conf }}
+    - user: root
+    - group: root
+    - mode: 0600
+    - makedirs: True
+    - replace: False
+    - require_in:
+      - ini: Configure Local Log Sources
+
+Configure Local Log Sources:
+  ini.options_present:
+    - name: {{ splunkforwarder.inputs.conf }}
+    - sections: {{ splunkforwarder.inputs.sections }}
+    - require_in:
+      - cmd: Accept Splunk License
+    - watch_in:
+      - service: Ensure Splunk Service is Running
+{%- endif %}
+
 Accept Splunk License:
   cmd.run:
     - name: {{ splunkforwarder.bin_file }} start --accept-license

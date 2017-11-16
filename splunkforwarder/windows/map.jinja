@@ -21,6 +21,10 @@ log_local:
       category.FilesystemChangeWatcher=ERROR
   conf: >-
     '{{ programfiles }}\SplunkUniversalForwarder\etc\log-local.cfg'
+inputs:
+  sections: {{ salt.grains.get('splunkforwarder:inputs:sections') | default({}, true) | yaml }}
+  conf: >-
+    '{{ programfiles }}\SplunkUniversalForwarder\etc\system\local\inputs.conf'
 bin_file: >-
     {{ programfiles }}\SplunkUniversalForwarder\bin\splunk.exe
 
@@ -28,7 +32,7 @@ bin_file: >-
 
 {#- Define the splunkforwarder map, merging pillar and default values #}
 {%-
-    set splunkforwarder = salt['pillar.get'](
+    set splunkforwarder = salt.pillar.get(
         'splunkforwarder:lookup',
         default=defaults,
         merge=True
