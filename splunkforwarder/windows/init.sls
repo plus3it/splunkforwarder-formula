@@ -34,6 +34,25 @@ splunkforwarder-log-local.cfg:
     - watch_in:
       - service: splunkforwarder-service-start
 
+{%- if splunkforwarder.inputs.get('sections') %}
+splunkforwader-create-inputs.conf:
+  file.managed:
+    - name: {{ splunkforwarder.inputs.conf }}
+    - makedirs: True
+    - replace: False
+    - require_in:
+      - ini: splunkforwarder-configure-inputs.conf
+
+splunkforwarder-configure-inputs.conf:
+  ini.options_present:
+    - name: {{ splunkforwarder.inputs.conf }}
+    - sections: {{ splunkforwarder.inputs.sections }}
+    - require_in:
+      - service: splunkforwarder-service-stop
+    - watch_in:
+      - service: splunkforwarder-service-start
+{%- endif %}
+
 splunkforwarder-service-stop:
   service.dead:
     - name: {{ splunkforwarder.service }}

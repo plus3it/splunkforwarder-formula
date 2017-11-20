@@ -28,6 +28,13 @@ splunkforwarder:
           #category.TcpOutputProc=WARN
           #category.FilesystemChangeWatcher=ERROR
 
+    # inputs.conf is a map with a `sections` key that contains sections of the
+    # INI-formatted `inputs.conf` file. For syntax and INI sections options,
+    # see http://docs.splunk.com/Documentation/Splunk/latest/Admin/Inputsconf.
+    #inputs:
+      #sections:
+        #'monitor://C:\path\to\app.log': {}
+
     # `package` is the name of the winrepo package containing the
     # splunkforwarder
     #package: splunkforwarder
@@ -64,6 +71,13 @@ splunkforwarder:
           #category.StatusMgr=WARN
           #category.TcpOutputProc=WARN
           #category.FilesystemChangeWatcher=ERROR
+
+    # inputs.conf is a map with a `sections` key that contains sections of the
+    # INI-formatted `inputs.conf` file. For syntax and INI sections options,
+    # see http://docs.splunk.com/Documentation/Splunk/latest/Admin/Inputsconf.
+    #inputs:
+      #sections:
+        #'monitor:///path/to/app.log': {}
 
     # list of ports to open outbound for splunk communication
     #client_out_ports:

@@ -62,6 +62,23 @@ log_local:
       category.FilesystemChangeWatcher=ERROR
 ```
 
+### (Windows) splunkforwarder:lookup:inputs
+
+This parameter is a map with a `sections` key that contains sections of the
+INI-formatted `inputs.conf` file. For syntax and INI sections options, see
+<http://docs.splunk.com/Documentation/Splunk/latest/Admin/Inputsconf>.
+
+>**Required**: `False`
+
+**Example**:
+
+```yaml
+inputs:
+  sections:
+    'monitor://C:\path\to\app.log': {}
+```
+
+
 ### (Windows) splunkforwarder:lookup:package
 
 The `package` parameter is the name of the package as defined in the winrepo
@@ -152,6 +169,22 @@ log_local:
       category.StatusMgr=WARN
       category.TcpOutputProc=WARN
       category.FilesystemChangeWatcher=ERROR
+```
+
+### (Linux) splunkforwarder:lookup:inputs
+
+This parameter is a map with a `sections` key that contains sections of the
+INI-formatted `inputs.conf` file. For syntax and INI sections options, see
+<http://docs.splunk.com/Documentation/Splunk/latest/Admin/Inputsconf>.
+
+>**Required**: `False`
+
+**Example**:
+
+```yaml
+inputs:
+  sections:
+    'monitor:///path/to/app.log': {}
 ```
 
 ### (Linux) splunkforwarder:lookup:package

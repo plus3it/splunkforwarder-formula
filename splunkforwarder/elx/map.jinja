@@ -11,6 +11,9 @@ log_local:
       category.TcpOutputProc=WARN
       category.FilesystemChangeWatcher=ERROR
   conf: /opt/splunkforwarder/etc/system/local/log-local.cfg
+inputs:
+  sections: {{ salt.grains.get('splunkforwarder:inputs:sections') | default({}, true) | yaml }}
+  conf: /opt/splunkforwarder/etc/system/local/inputs.conf
 client_out_ports:
   - 8089
   - 9997
@@ -22,7 +25,7 @@ service_file: /etc/init.d/splunk
 
 {#- Define the splunkforwarder map, merging pillar and default values #}
 {%-
-    set splunkforwarder = salt['pillar.get'](
+    set splunkforwarder = salt.pillar.get(
         'splunkforwarder:lookup',
         default=defaults,
         merge=True
