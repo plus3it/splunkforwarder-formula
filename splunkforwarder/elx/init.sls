@@ -122,3 +122,28 @@ Ensure Splunk Service is Running:
     - watch:
       - file: Install Client Log Config File
       - file: Install Client Agent Config File
+
+Pre-Create Splunk Log Directory:
+  file.directory:
+    - name: /var/log/splunk
+    - user: root
+    - group: root
+    - dir_mode: 0700
+    - recurse:
+      - user
+      - group
+      - mode
+    - makedirs: True
+    - require_in:
+      - file: Create Sym-link To Splunk Log Dir
+
+Create Sym-link To Splunk Log Dir:
+  file.symlink:
+    - name: /opt/splunkforwarder/var/log/splunk
+    - target: /var/log/splunk
+    - user: root
+    - group: root
+    - mode: 0700
+    - makedirs: True
+    - require_in:
+      - pkg: Install Splunk Package
