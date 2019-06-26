@@ -43,6 +43,7 @@ Install Splunk Package:
   pkg.installed:
     - sources:
       - {{ splunkforwarder.package }}: {{ splunkforwarder.package_url }}
+    - skip_verify: True
 
 Install Client Log Config File:
   file.managed:
