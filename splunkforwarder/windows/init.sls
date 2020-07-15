@@ -46,7 +46,7 @@ splunkforwader-create-inputs.conf:
 splunkforwarder-configure-inputs.conf:
   ini.options_present:
     - name: {{ splunkforwarder.inputs.conf }}
-    - sections: {{ splunkforwarder.inputs.sections }}
+    - sections: {{ splunkforwarder.inputs.sections | yaml }}
     - require_in:
       - service: splunkforwarder-service-stop
     - watch_in:
