@@ -87,7 +87,7 @@ Create Inputs Conf:
 Configure Local Log Sources:
   ini.options_present:
     - name: {{ splunkforwarder.inputs.conf }}
-    - sections: {{ splunkforwarder.inputs.sections }}
+    - sections: {{ splunkforwarder.inputs.sections | yaml }}
     - require_in:
       - cmd: Accept Splunk License
     - watch_in:
