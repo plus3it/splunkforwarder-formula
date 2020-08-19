@@ -96,7 +96,7 @@ Configure Local Log Sources:
 
 Accept Splunk License:
   cmd.run:
-    - name: {{ splunkforwarder.bin_file }} start --accept-license
+    - name: {{ splunkforwarder.bin_file }} start {{ splunkforwarder.service_opts }}
     - require:
       - file: Install Client Log Config File
       - file: Install Client Agent Config File
