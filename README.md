@@ -151,6 +151,21 @@ splunkforwarder:
       target_uri: 'hostname.domainname:9098'
 ```
 
+### (Linux) splunkforwarder:lookup:service_opts
+
+This parameter is a string representing the options given when starting
+the Splunk service.
+
+>**Required**: `False`
+>
+>**Default**: `--accept-license`
+
+**Example**:
+
+```yaml
+service_opts: --accept-license
+```
+
 ### (Linux) splunkforwarder:lookup:log_local
 
 This parameter is a map with a `contents` key that contains the contents of the

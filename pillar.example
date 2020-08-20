@@ -64,6 +64,9 @@ splunkforwarder:
     # LINUX: Optional parameters for the splunkforwarder-formula
     ##############################################################
 
+    # service_opts can be used to configure non-default service start options
+    #service_opts: --accept-license
+
     # log-local.cfg contains information on what logs will be forwarded to the
     # splunk server.
     #log_local:
