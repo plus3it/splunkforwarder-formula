@@ -21,6 +21,11 @@ client_out_ports:
 cert_file: /opt/splunkforwarder/etc/auth/server.pem
 bin_file: /opt/splunkforwarder/bin/splunk
 service_file: /etc/systemd/system/SplunkForwarder.service
+user:
+  name: splunk
+  fullname: Splunk Server
+  home: /opt/splunkforwarder
+  shell: /bin/bash
 
 {%- endload %}
 
