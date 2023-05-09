@@ -13,30 +13,11 @@
 {%- set comment = "Connectivity for splunkforwarder" %}
 
 {%- for port in splunkforwarder.client_out_ports %}
-  {%- if salt.grains.get('osmajorrelease') == '7' %}
 Allow Splunk Mgmt Outbound Port {{ port }}:
   cmd.run:
     - name: |
         firewall-cmd --direct --add-rule ipv4 filter OUTPUT_direct 50 -p tcp -m tcp --dport={{ port }} -m comment --comment "{{ comment }}" -j ACCEPT
         firewall-cmd --permanent --direct --add-rule ipv4 filter OUTPUT_direct 50 -p tcp -m tcp --dport={{ port }} -m comment --comment "{{ comment }}" -j ACCEPT
-  {%- elif salt.grains.get('osmajorrelease') == '6' %}
-Allow Splunk Mgmt Outbound Port {{ port }}:
-  iptables.append:
-    - table: filter
-    - chain: OUTPUT
-    - jump: ACCEPT
-    - match:
-        - state
-        - comment
-    - comment: "{{ comment }}"
-    - connstate: NEW
-    - dport: {{ port }}
-    - proto: tcp
-    - save: True
-    - require_in:
-      - file: Install Splunk Package
-  {%- else %}
-  {%- endif %}
 {%- endfor %}
 
 Install Splunk Package:
