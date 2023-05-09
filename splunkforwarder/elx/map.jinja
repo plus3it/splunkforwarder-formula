@@ -20,7 +20,7 @@ client_out_ports:
   - 9997
 cert_file: /opt/splunkforwarder/etc/auth/splunkweb/cert.pem
 bin_file: /opt/splunkforwarder/bin/splunk
-service_file: /etc/init.d/splunk
+service_file: /etc/systemd/system/SplunkForwarder.service
 
 {%- endload %}
 
