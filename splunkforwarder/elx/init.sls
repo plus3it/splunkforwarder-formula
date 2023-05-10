@@ -13,30 +13,11 @@
 {%- set comment = "Connectivity for splunkforwarder" %}
 
 {%- for port in splunkforwarder.client_out_ports %}
-  {%- if salt.grains.get('osmajorrelease') == '7' %}
 Allow Splunk Mgmt Outbound Port {{ port }}:
   cmd.run:
     - name: |
         firewall-cmd --direct --add-rule ipv4 filter OUTPUT_direct 50 -p tcp -m tcp --dport={{ port }} -m comment --comment "{{ comment }}" -j ACCEPT
         firewall-cmd --permanent --direct --add-rule ipv4 filter OUTPUT_direct 50 -p tcp -m tcp --dport={{ port }} -m comment --comment "{{ comment }}" -j ACCEPT
-  {%- elif salt.grains.get('osmajorrelease') == '6' %}
-Allow Splunk Mgmt Outbound Port {{ port }}:
-  iptables.append:
-    - table: filter
-    - chain: OUTPUT
-    - jump: ACCEPT
-    - match:
-        - state
-        - comment
-    - comment: "{{ comment }}"
-    - connstate: NEW
-    - dport: {{ port }}
-    - proto: tcp
-    - save: True
-    - require_in:
-      - file: Install Splunk Package
-  {%- else %}
-  {%- endif %}
 {%- endfor %}
 
 Install Splunk Package:
@@ -48,19 +29,20 @@ Install Splunk Package:
 Install Client Log Config File:
   file.managed:
     - name: {{ splunkforwarder.log_local.conf }}
-    - user: root
-    - group: root
+    - user: {{ splunkforwarder.user.name }}
+    - group: {{ splunkforwarder.user.name }}
     - mode: 0600
     - contents: |
         {{ splunkforwarder.log_local.contents | indent(8) }}
     - require:
       - pkg: Install Splunk Package
+      - user: Manage Splunk User
 
 Install Client Agent Config File:
   file.managed:
     - name: {{ splunkforwarder.deploymentclient.conf }}
-    - user: root
-    - group: root
+    - user: {{ splunkforwarder.user.name }}
+    - group: {{ splunkforwarder.user.name }}
     - mode: 0600
     - contents: |
         [deployment-client]
@@ -71,13 +53,14 @@ Install Client Agent Config File:
         targetUri = {{ splunkforwarder.deploymentclient.target_uri }}
     - require:
       - pkg: Install Splunk Package
+      - user: Manage Splunk User
 
 {%- if splunkforwarder.inputs.get('sections') %}
 Create Inputs Conf:
   file.managed:
     - name: {{ splunkforwarder.inputs.conf }}
-    - user: root
-    - group: root
+    - user: {{ splunkforwarder.user.name }}
+    - group: {{ splunkforwarder.user.name }}
     - mode: 0600
     - makedirs: True
     - replace: False
@@ -89,31 +72,31 @@ Configure Local Log Sources:
     - name: {{ splunkforwarder.inputs.conf }}
     - sections: {{ splunkforwarder.inputs.sections | yaml }}
     - require_in:
-      - cmd: Accept Splunk License
+      - cmd: Start Splunk Service
     - watch_in:
       - service: Ensure Splunk Service is Running
 {%- endif %}
 
-Accept Splunk License:
+Configure Splunk Agent Boot-scripts:
   cmd.run:
-    - name: {{ splunkforwarder.bin_file }} start {{ splunkforwarder.service_opts }}
+    - name: {{ splunkforwarder.bin_file }} enable boot-start {{ splunkforwarder.service_opts }}
     - require:
       - file: Install Client Log Config File
       - file: Install Client Agent Config File
-    - unless: test -f {{ splunkforwarder.cert_file }}
-
-Configure Splunk Agent Boot-scripts:
-  cmd.run:
-    - name: {{ splunkforwarder.bin_file }} enable boot-start
-    - require:
-      - cmd: Accept Splunk License
     - unless: test -f {{ splunkforwarder.service_file }}
+
+Start Splunk Service:
+  cmd.run:
+    - name: {{ splunkforwarder.bin_file }} start
+    - require:
+      - cmd: Configure Splunk Agent Boot-scripts
+    - unless: test -f {{ splunkforwarder.cert_file }}
 
 Enable Splunk Service:
   service.enabled:
     - name: {{ splunkforwarder.service }}
     - require:
-      - cmd: Configure Splunk Agent Boot-scripts
+      - cmd: Start Splunk Service
 
 Ensure Splunk Service is Running:
   service.running:
@@ -127,8 +110,8 @@ Ensure Splunk Service is Running:
 Pre-Create Splunk Log Directory:
   file.directory:
     - name: /var/log/splunk
-    - user: root
-    - group: root
+    - user: {{ splunkforwarder.user.name }}
+    - group: {{ splunkforwarder.user.name }}
     - dir_mode: 0700
     - recurse:
       - user
@@ -142,9 +125,18 @@ Create Sym-link To Splunk Log Dir:
   file.symlink:
     - name: /opt/splunkforwarder/var/log/splunk
     - target: /var/log/splunk
-    - user: root
-    - group: root
+    - user: {{ splunkforwarder.user.name }}
+    - group: {{ splunkforwarder.user.name }}
     - mode: 0700
     - makedirs: True
     - require_in:
       - pkg: Install Splunk Package
+
+Manage Splunk User:
+  user.present:
+    - name: {{ splunkforwarder.user.name }}
+    - fullname: {{ splunkforwarder.user.fullname }}
+    - home: {{ splunkforwarder.user.home }}
+    - usergroup: True
+    - require_in:
+      - file: Pre-Create Splunk Log Directory

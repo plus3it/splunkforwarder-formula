@@ -235,3 +235,32 @@ splunkforwarder:
   lookup:
     service: splunk
 ```
+
+### (Linux) splunkforwarder:lookup:user
+
+The `user` is an object of attributes that configure the user for the Splunk
+Universal Forwarder.
+
+>**Required**: `False`
+>
+>**Default**:
+>
+>```yaml
+>user:
+>  name: splunk
+>  fullname: Splunk Server
+>  home: /opt/splunkforwarder
+>  shell: /bin/bash
+>```
+
+**Example**:
+
+```yaml
+splunkforwarder:
+  lookup:
+    user:
+      name: splunk
+      fullname: Splunk Server
+      home: /opt/splunkforwarder
+      shell: /bin/bash
+```

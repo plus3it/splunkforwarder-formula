@@ -93,3 +93,10 @@ splunkforwarder:
 
     # `service` is the name of the splunkforwarder service
     #service: splunk
+
+    # `user` is an object of attributes used to configure the splunk user
+    #user:
+    #  name: splunk
+    #  fullname: Splunk Server
+    #  home: /opt/splunkforwarder
+    #  shell: /bin/bash
