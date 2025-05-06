@@ -7,7 +7,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  linux:
     uses: plus3it/actions-workflows/.github/workflows/test-salt-linux.yml@5c7f269c22aaf175bb68de5e6ecd556bb1b08fff
     strategy:
       matrix:
@@ -18,6 +18,22 @@ jobs:
           - splunkforwarder
         salt_pillar_root:
           - ./tests/pillar/test-linux-main
+    with:
+      salt-os-version: ${{ matrix.os_version }}
+      salt-state: ${{ matrix.salt_state }}
+      salt-pillar-root: ${{ matrix.salt_pillar_root }}
+
+  windows:
+    uses: plus3it/actions-workflows/.github/workflows/test-salt-windows.yml@5c7f269c22aaf175bb68de5e6ecd556bb1b08fff
+    strategy:
+      matrix:
+        os_version:
+          - windows-2019
+          - windows-2022
+        salt_state:
+          - splunkforwarder
+        salt_pillar_root:
+          - ./tests/pillar/test-windows-main
     with:
       salt-os-version: ${{ matrix.os_version }}
       salt-state: ${{ matrix.salt_state }}
